@@ -265,3 +265,49 @@
 		matcher.match(12);
 	});
 }());
+
+(function() {
+	var matcher, containsLetterA, containsLetterB, containsLetterC, containsLetterD, containsLetterE;
+
+	module('Matcher returns matcher chain in onMatch method', {
+		setup: function() {
+			function containsLetterMatcher(letter) {
+				return new Matcher({
+					description: 'contains letter ' + letter,
+					isMatch: function(x) {
+						return x.indexOf(letter) != -1;
+					}
+				});
+			}
+
+			matcher = new Matcher({
+				description: 'is a string',
+				isMatch: function(x) {
+					return typeof x == 'string';
+				}
+			});
+
+			containsLetterA = containsLetterMatcher('a');
+			containsLetterB = containsLetterMatcher('b');
+			containsLetterC = containsLetterMatcher('c');
+			containsLetterD = containsLetterMatcher('d');
+			containsLetterE = containsLetterMatcher('e');
+
+			matcher.add(containsLetterA);
+			containsLetterA.add(containsLetterB);
+			containsLetterB.add(containsLetterC);
+			containsLetterC.add(containsLetterD);
+			containsLetterD.add(containsLetterE);
+		}
+	});
+
+	test('should pass a chain of successful matchers to onMatch function', function() {
+		expect(3);
+		containsLetterE.onMatch = function(x, match, chain) {
+			deepEqual(chain, [matcher, containsLetterA, containsLetterB, containsLetterC, containsLetterD, containsLetterE]);
+		}
+		matcher.match('abcde');
+		matcher.match('edcba');
+		matcher.match('one bad cat');
+	});
+}());
