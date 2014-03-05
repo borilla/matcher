@@ -41,21 +41,24 @@ var Matcher = (function() {
 	}
 
 	/**
-	 * Return if item is a match and call onMatch method for deepest match
+	 * Return if item is a match (and call onMatch method for deepest match)
 	 */
-	MatcherPrototype.match = function(x, _chain) {
-		_chain = _chain || [];
+	MatcherPrototype.match = function(x) {
+		return this._match(x, [])
+	}
+
+	MatcherPrototype._match = function(x, chain) {
 		if (this.isMatch(x)) {
-			_chain.push(this);
+			chain.push(this);
 			var children = this._children;
 			for (var i = 0, l = children.length; i < l; ++i) {
 				var child = children[i];
-				if (child.match(x, _chain)) {
+				if (child._match(x, chain)) {
 					return true;
 				}
 			}
 			// else, no child matched
-			this.onMatch && this.onMatch(x, this, _chain);
+			this.onMatch && this.onMatch(x, this, chain);
 			return true;
 		}
 		// else
