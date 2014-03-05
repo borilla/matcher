@@ -2,11 +2,9 @@ var Matcher = (function() {
 
 	function Matcher(extension) {
 		extend(this, extension);
-
 		if (!(isMatcher(this))) {
 			throw Error('this is not a matcher object');
 		}
-
 		this._children = [];
 	}
 
@@ -42,6 +40,14 @@ var Matcher = (function() {
 
 	MatcherPrototype.match = function(x) {
 		if (this.isMatch(x)) {
+			var children = this._children;
+			for (var i = 0, l = children.length; i < l; ++i) {
+				var child = children[i];
+				if (child.match(x)) {
+					return true;
+				}
+			}
+			// else, no child matched
 			this.onMatch && this.onMatch(x, this);
 			return true;
 		}
