@@ -108,9 +108,11 @@
 	});
 
 	test('should call onMatch method if item is a match', function(done) {
-		expect(1);
-		matcher.onMatch = function(x) {
-			equal(x, 2);
+		expect(2);
+		matcher.onMatch = function(x, match) {
+			equal(x, 2, 'onMatch is called with item to match');
+			equal(match, matcher, 'onMatch is called with matcher object that matched it');
+			console.log(this);
 		}
 		matcher.match(2);
 	});

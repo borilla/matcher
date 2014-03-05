@@ -1,5 +1,8 @@
 var Matcher = (function() {
 
+	/**
+	 * Matcher constructor. Extension should contain isMatch method and optionally onMatch callback
+	 */
 	function Matcher(extension) {
 		extend(this, extension);
 		if (!(isMatcher(this))) {
@@ -8,8 +11,8 @@ var Matcher = (function() {
 		this._children = [];
 	}
 
-	function isMatcher(x) {
-		return x instanceof Matcher && isFunction(x.isMatch);
+	function isMatcher(m) {
+		return m instanceof Matcher && isFunction(m.isMatch);
 	}
 
 	function isFunction(f) {
@@ -29,7 +32,6 @@ var Matcher = (function() {
 
 	/**
 	 * Add a child matcher object
-	 * @param {Matcher} matcher child matcher object
 	 */
 	MatcherPrototype.add = function(child) {
 		if (!isMatcher(child)) {
@@ -38,6 +40,9 @@ var Matcher = (function() {
 		this._children.push(child);
 	}
 
+	/**
+	 * Return if item is a match and call onMatch method for deepest match
+	 */
 	MatcherPrototype.match = function(x) {
 		if (this.isMatch(x)) {
 			var children = this._children;
