@@ -160,7 +160,7 @@
 	});
 
 	test('should return false if item matches child but not matcher', function() {
-		// number is even but not greater than 10
+		// number is greater than 10 but not even
 		equal(matcher.match(11), false);
 		equal(matcher.match(13), false);
 		equal(matcher.match(1001), false);
@@ -186,7 +186,7 @@
 		matcher.match(9);
 	});
 
-	test('should trigger matcher.onMatch true if item matches matcher but not child', function() {
+	test('should trigger matcher.onMatch if item matches matcher but not child', function() {
 		matcher.onMatch = function(x) {
 			ok(true);
 		};
